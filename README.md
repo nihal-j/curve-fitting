@@ -14,3 +14,17 @@ contains the following attributes:
 The dataset contains 434874 instances.
 
 For the purpose of curve fitting, we make use of **LONGITUDE** and **LATITUDE** to estimate the target variable **ALTITUDE**.
+<br><br><br>
+
+# Bayesian Estimation
+The purpose of this segment of the repository is to demonstrate the use of Bayesian methods to estimate population parameters for suggesting a probability distribution to fit the given set of observations.
+
+To this end, we make use of the classic head-and-tail series of experiments. We know that this has an underlying Binomial distribution. We draw random samples from a Binomial distribution with parameters p = 0.9, n = 160.
+
+We then make use of Bayes' Theorem and the fact that the conjugate prior of a Binomial distribution is a Beta distribution to estimate p and n given only the set of observations.
+
+This estimation is done using both numerical and analytical methods.
+
+Considering one observation at a time, also known as sequential learning, we were able to obtain the following distribution at the end of  n observations:
+
+![Sequential Learning GIF](https://github.com/nihal-j/curve-fitting/blob/master/images/animation.gif "Sequential Learning Using Bayesian Methods")
