@@ -1,2 +1,6 @@
+gradient_descent_complete.py
 Assignment 1.pdf
 /.ipynb_checkpoints
+*.pdf
+/old_files
+/.vscode
