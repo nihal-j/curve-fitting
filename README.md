@@ -13,4 +13,4 @@ contains the following attributes:
 
 The dataset contains 434874 instances.
 
-For the purpose of curve fitting, we make use of **LONGITUDE** and **LATITUDE** to estimate the **target** variable **ALTITUDE**.
+For the purpose of curve fitting, we make use of **LONGITUDE** and **LATITUDE** to estimate the target variable **ALTITUDE**.
