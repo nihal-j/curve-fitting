@@ -9,6 +9,7 @@ import preprocessing
 class Model:
 
     def __init__(self, W, X, T, deg, maxIter, eta, lamb=0, reg='L2'):
+
         self.W = W
         self.X = X
         self.T = T
@@ -51,9 +52,18 @@ class Model:
         
         self.W = self.W - (self.eta * delta)
 
-    def predict(self, X=None, W=None):
+    def predict(self, X, W):
         
         '''
+        Performs prediction, given the weights and features using
+        the formula: Y = X.theta.
+
+        Arguments:
+            X:  feature matrix.
+            W:  weights.
+
+        Returns:
+            H: the prediction values.
         '''
 
         H = X.dot(W)
@@ -62,6 +72,20 @@ class Model:
     def generate_model(self):
 
         '''
+        Performs gradient descent on this object's attributes.
+        
+        Hyperparameter tuning can be performed by changing values of lambda (for regularization),
+        eta (for optimizing learning rate) and degree (for finding the threshold for overfitting)
+        during initialization of this object.
+
+        If pre-trained weights are not used for initialization, then random initialization is done
+        for the weights.
+
+        The termination condition is specified using max number of iterations.
+
+        This method does not return the learned weights but only updates the class variables and
+        they can be accessed using the object's instance.
+        The loss over the training iterations is returned as a Python list for analysis.
         '''
 
         numOfFeatures = self.X.shape[1]
@@ -87,11 +111,6 @@ class Model:
             prevError = currentError
             currentError = E
             errors.append(currentError)
-            #=======
-            # Perform termination check here using prevError and currentError
-            #=======
-            # print(0.5*lamb*sum(W*W))
-            # show(W, currentError, d)
             self.update_weights()
         
         return errors
@@ -99,6 +118,10 @@ class Model:
     def generate_stochastic_model(self):
 
         '''
+        Performs stochastic gradient descent on this object's attributes.
+        For more details, refer documentation of generate_model() function.
+
+        Number of iterations should be tuned to specify number of epochs.
         '''
 
         featureMatrix = np.copy(self.X)
@@ -133,6 +156,11 @@ class Model:
     def generate_normal_equation_model(self):
 
         '''
+        Generates an estimate for model parameters using an analytic method.
+        The equation used is:
+            theta = ((inv(X_trans.X)).(X_trans)).T
+        
+        No errors are returned because there is no training involved.
         '''
 
         self.W = np.matmul(np.transpose(self.X), self.X)
@@ -145,16 +173,35 @@ class Model:
     def calc_R2(self, T, H):
     
         '''
+        Calculates the R^2 score for this object's model.
+        Refer https://en.wikipedia.org/wiki/Coefficient_of_determination for more details.
+
+        Arguments:
+            T:  the truth values for the target variable.
+            H:  the predicted values for the target variable.
+
+        Returns:
+            r2: the R^2 score.
         '''
 
         tss = np.sum((T - np.mean(T))*(T - np.mean(T)))
         rss = np.sum((T - H)*(T - H))
+        r2 = 1 - (rss/tss)
         
-        return 1 - (rss/tss)
+        return r2
 
     def calc_rmse(self, T, H):
 
         '''
+        Calculates the RMSE score for this object's model.
+        Refer https://en.wikipedia.org/wiki/Root-mean-square_deviation for more details.
+
+        Arguments:
+            T:  the truth values for the target variable.
+            H:  the predicted values for the target variable.
+
+        Returns:
+            r2: the R^2 score.
         ''' 
 
         se = np.sum((T - H)*(T - H))
@@ -175,23 +222,3 @@ if __name__ == '__main__':
     normalizedT = preprocessing.normalize(T)
 
     x_train, y_train, T_train, x_val, y_val, T_val, x_test, y_test, T_test = preprocessing.split(normalizedx, normalizedy, T)
-    trainCount = len(T_train)
-
-    featureMatrix, _ = preprocessing.generate_features(x_train, y_train, trainCount, 1)
-
-    linearModel = Model(np.array([]), featureMatrix, T_train, 1, 2*len(featureMatrix), 0.03, 0)
-
-    # errors = linearModel.generate_model()
-    # errors = linearModel.generate_stochastic_model()
-    linearModel.generate_normal_equation_model()
-
-    X_val, _ = preprocessing.generate_features(x_val, y_val, len(x_val), 1)
-
-
-    H = linearModel.predict(X_val, linearModel.W)
-
-    print('R2 error: ', linearModel.calc_R2(T_val, H))  
-
-    print('RMS error: ', linearModel.calc_rmse(T_val, H))
-
-    print(linearModel.W)
